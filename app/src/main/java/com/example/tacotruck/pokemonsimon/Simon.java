@@ -26,6 +26,8 @@ public class Simon {
     ArrayList<Integer> userPokemon = new ArrayList<>();
     Handler handler = new Handler();
     Integer count = -1;
+    public static String WIN = "WIN";
+    public static String LOSE = "LOSE";
     public Context mContext;
 
     public Simon(){
@@ -56,7 +58,7 @@ public class Simon {
         this.yellow = yellow;
     }
 
-    public void pickPokemon(final int count){
+    public void pickPokemon(int count){
         //empty stack and arraylist
         this.count = count;
         hasPickedPokemon = Boolean.FALSE;
@@ -135,7 +137,7 @@ public class Simon {
         blue.setPressed(false);
     }
 
-    public Boolean verifyPokemon(){
+    public String verifyPokemon(){
         if(pickedPokemon.size() == this.count && hasPickedPokemon){
             if(red.isPressed()){
                 userPokemon.add(0);
@@ -162,7 +164,7 @@ public class Simon {
                     hasPickedPokemon = Boolean.FALSE;
                     start.setClickable(true);
                     userPokemon.clear();
-                    return(Boolean.TRUE);
+                    return(WIN);
                 }
                 else{
                     System.out.println("WRONG");
@@ -171,11 +173,11 @@ public class Simon {
                     hasPickedPokemon = Boolean.FALSE;
                     start.setClickable(true);
                     userPokemon.clear();
-                    return(Boolean.FALSE);
+                    return(LOSE);
                 }
              }
         }
-        return(Boolean.TRUE);
+        return("");
     }
 
 

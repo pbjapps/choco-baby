@@ -20,6 +20,14 @@
             android:name=".ViridianForestActivity"
             android:label="@string/title_activity_viridian_forest" >
         </activity>
+        <activity
+            android:name=".PewterCityActivity"
+            android:label="@string/title_activity_pewter_city"
+            android:parentActivityName=".BaseLevelActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.tacotruck.pokemonsimon.BaseLevelActivity" />
+        </activity>
     </application>
 
 </manifest>

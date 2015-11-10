@@ -5,7 +5,7 @@ public class ViridianForestActivity extends BaseLevelActivity {
     public ViridianForestActivity() {
         this.mapId = R.layout.activity_viridian_forest;
         this.mapMenuId = R.menu.menu_viridian_forest;
-        this.pkmnCount = 3;
+        this.pkmnCount = 8;
         this.pkmnOneImageId = R.id.imageView;
         this.pkmnTwoImageId = R.id.imageView2;
         this.pkmnThreeImageId = R.id.imageView3;
