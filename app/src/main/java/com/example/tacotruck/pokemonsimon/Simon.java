@@ -1,7 +1,6 @@
 package com.example.tacotruck.pokemonsimon;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -26,7 +25,7 @@ public class Simon {
     ArrayList<Integer> pickedPokemon = new ArrayList<>();
     ArrayList<Integer> userPokemon = new ArrayList<>();
     Handler handler = new Handler();
-    Integer count;
+    Integer count = -1;
     public Context mContext;
 
     public Simon(){
@@ -60,7 +59,7 @@ public class Simon {
     public void pickPokemon(final int count){
         //empty stack and arraylist
         this.count = count;
-        Boolean hasPickedPokemon = Boolean.FALSE;
+        hasPickedPokemon = Boolean.FALSE;
         pokemonStack = new Stack<>();
         pickedPokemon.clear();
         userPokemon.clear();
