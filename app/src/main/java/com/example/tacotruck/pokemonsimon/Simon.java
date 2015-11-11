@@ -159,7 +159,7 @@ public class Simon {
             if(userPokemon.size() == pickedPokemon.size()){
                 if(userPokemon.equals(pickedPokemon)){
                     System.out.println("CORRECT");
-                    Toast.makeText(mContext, "CORRECT", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "You WIN", Toast.LENGTH_LONG).show();
                     System.out.println("pickedPkmn" + pickedPokemon.toString() + " == userPokemon" + userPokemon.toString());
                     hasPickedPokemon = Boolean.FALSE;
                     start.setClickable(true);
@@ -168,7 +168,7 @@ public class Simon {
                 }
                 else{
                     System.out.println("WRONG");
-                    Toast.makeText(mContext, "WRONG " + pickedPokemon.toString() + " != " + userPokemon.toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "You LOSE", Toast.LENGTH_LONG).show();
                     System.out.println("pickedPokemon " + pickedPokemon.toString() + " != userPokemon" + userPokemon.toString());
                     hasPickedPokemon = Boolean.FALSE;
                     start.setClickable(true);

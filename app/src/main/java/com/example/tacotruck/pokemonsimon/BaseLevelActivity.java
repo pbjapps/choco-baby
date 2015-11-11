@@ -11,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,20 +26,17 @@ public class BaseLevelActivity extends Activity {
     protected int mapMenuId = R.menu.menu_viridian_forest;
     protected int pkmnCount = 1;
     protected int pkmnOneImageId = R.id.imageView;
-    protected int pkmnTwoImageId = R.id.imageView;
-    protected int pkmnThreeImageId = R.id.imageView;
-    protected int pkmnFourImageId = R.id.imageView;
-    protected int pkmnOneSoundId = R.raw.caterpie;
-    protected int pkmnTwoSoundId = R.raw.caterpie;
-    protected int pkmnThreeSoundId = R.raw.caterpie;
-    protected int pkmnFourSoundId = R.raw.caterpie;
-    protected int pkmnOnePicId = R.drawable.caterpie;
-    protected int pkmnTwoPicId = R.drawable.weedle;
-    protected int backgroundOneId = R.drawable.grass;
-    protected int backgroundTwoId = R.drawable.rock;
-    protected HashMap<Integer, ArrayList<Integer>> levelToPokemon= new HashMap<>();
+    protected int pkmnTwoImageId = R.id.imageView2;
+    protected int pkmnThreeImageId = R.id.imageView3;
+    protected int pkmnFourImageId = R.id.imageView4;
+    protected int textViewId = R.id.textView2;
     protected int level = 1;
+    protected int toplevel = 8;
     protected ImageButton pkmnOne, pkmnTwo, pkmnThree, pkmnFour;
+    protected TextView location;
+    private ArrayList<ImageButton> buttons;
+    private ArrayList<String> locations;
+    levelsMap map = levelsMap.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,18 +45,18 @@ public class BaseLevelActivity extends Activity {
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
+        location = (TextView) findViewById(textViewId);
         pkmnOne = (ImageButton) findViewById(pkmnOneImageId);
         pkmnTwo = (ImageButton) findViewById(pkmnTwoImageId);
         pkmnThree = (ImageButton) findViewById(pkmnThreeImageId);
         pkmnFour = (ImageButton) findViewById(pkmnFourImageId);
+        buttons = new ArrayList<>(Arrays.asList(pkmnOne, pkmnTwo, pkmnThree, pkmnFour));
+        locations = new ArrayList<>(Arrays.asList("Viridian Forest", "Pewter City", "Cerulean City",
+                "Vermillion City", "Celadon City", "Saffron City", "Fuschia City",
+                "Cinnabar Island"));
 
         int startButtonId = R.id.button3;
         Button startButton = (Button) findViewById(startButtonId);
-
-        //initialize map - background, pkmn, sound
-        levelsMap.getInstance().getExample();
-        levelToPokemon.put(1, new ArrayList<Integer>(Arrays.asList(backgroundOneId, pkmnOnePicId, pkmnOneSoundId)));
-        levelToPokemon.put(2, new ArrayList<Integer>(Arrays.asList(backgroundTwoId, pkmnTwoPicId, pkmnTwoSoundId)));
 
         initLevel();
 
@@ -102,6 +101,7 @@ public class BaseLevelActivity extends Activity {
     private void viewMainActivity() {
         Intent myIntent = new Intent(BaseLevelActivity.this, MainMenuActivity.class);
         BaseLevelActivity.this.startActivity(myIntent);
+        finish();
     }
 
     private void handlePkmnClick(int pkmnSoundId) {
@@ -118,90 +118,65 @@ public class BaseLevelActivity extends Activity {
             level = 1;
             viewMainActivity();
         }
-        else if (result.equals(Simon.WIN) && level < 2) {
+        else if (result.equals(Simon.WIN) && level < toplevel) {
             level++;
             initLevel();
         }
-        else if (result.equals(Simon.WIN)  && level >= 2){
+        else if (result.equals(Simon.WIN)  && level >= toplevel){
             viewMainActivity();
+            Toast.makeText(this.getApplicationContext(), "You beat all 8 gym leaders! Now onto the Elite 4...",Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void initLevel(){
-        this.pkmnCount = level + 2;
+    private void createStateListDrawable(Integer clickedDrawable, Integer defaultDrawable, ImageButton b){
         StateListDrawable states = new StateListDrawable();
-        states.addState(new int[] {android.R.attr.state_pressed},
-                getResources().getDrawable(levelToPokemon.get(level).get(1)));
-        states.addState(new int[] {android.R.attr.state_focused},
-                getResources().getDrawable(levelToPokemon.get(level).get(1)));
+        states.addState(new int[]{android.R.attr.state_pressed},
+                getResources().getDrawable(clickedDrawable));
+        states.addState(new int[]{android.R.attr.state_focused},
+                getResources().getDrawable(clickedDrawable));
         states.addState(new int[] {android.R.attr.state_selected},
-                getResources().getDrawable(levelToPokemon.get(level).get(1)));
+                getResources().getDrawable(clickedDrawable));
         states.addState(new int[] { },
-                getResources().getDrawable(levelToPokemon.get(level).get(0)));
+                getResources().getDrawable(defaultDrawable));
 
-        pkmnOne.setImageDrawable(states);
+        b.setImageDrawable(states);
+    }
 
-        states = new StateListDrawable();
-        states.addState(new int[] {android.R.attr.state_pressed},
-                getResources().getDrawable(levelToPokemon.get(level).get(1)));
-        states.addState(new int[] {android.R.attr.state_focused},
-                getResources().getDrawable(levelToPokemon.get(level).get(1)));
-        states.addState(new int[]{android.R.attr.state_selected},
-                getResources().getDrawable(levelToPokemon.get(level).get(1)));
-        states.addState(new int[]{},
-                getResources().getDrawable(levelToPokemon.get(level).get(0)));
+    private void initLevel(){
+        pkmnCount = level + 2;
 
-        pkmnTwo.setImageDrawable(states);
+        location.setText(locations.get(level-1));
 
-        states = new StateListDrawable();
-        states.addState(new int[] {android.R.attr.state_pressed},
-                getResources().getDrawable(levelToPokemon.get(level).get(1)));
-        states.addState(new int[] {android.R.attr.state_focused},
-                getResources().getDrawable(levelToPokemon.get(level).get(1)));
-        states.addState(new int[]{android.R.attr.state_selected},
-                getResources().getDrawable(levelToPokemon.get(level).get(1)));
-        states.addState(new int[]{},
-                getResources().getDrawable(levelToPokemon.get(level).get(0)));
-
-        pkmnThree.setImageDrawable(states);
-
-        states = new StateListDrawable();
-        states.addState(new int[] {android.R.attr.state_pressed},
-                getResources().getDrawable(levelToPokemon.get(level).get(1)));
-        states.addState(new int[] {android.R.attr.state_focused},
-                getResources().getDrawable(levelToPokemon.get(level).get(1)));
-        states.addState(new int[] {android.R.attr.state_selected},
-                getResources().getDrawable(levelToPokemon.get(level).get(1)));
-        states.addState(new int[]{},
-                getResources().getDrawable(levelToPokemon.get(level).get(0)));
-
-        pkmnFour.setImageDrawable(states);
+        //for(Integer pkmnIds : map.getPokemon(level)){
+        for(int i = 0; i < map.getPokemon(level).size(); i++){
+            createStateListDrawable(map.getPokemon(level).get(i), map.getBackground(level).get(0), buttons.get(i));
+        }
 
         pkmnOne.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handlePkmnClick(levelToPokemon.get(level).get(2));
+                handlePkmnClick(map.getSound(level).get(0));
             }
         });
 
         pkmnTwo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handlePkmnClick(levelToPokemon.get(level).get(2));
+                handlePkmnClick(map.getSound(level).get(1));
             }
         });
 
         pkmnThree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handlePkmnClick(levelToPokemon.get(level).get(2));
+                handlePkmnClick(map.getSound(level).get(2));
             }
         });
 
         pkmnFour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handlePkmnClick(levelToPokemon.get(level).get(2));
+                handlePkmnClick(map.getSound(level).get(3));
             }
         });
     }

@@ -52,5 +52,6 @@ public class MainMenuActivity extends Activity {
     public void viewViridianForest(){
         Intent myIntent = new Intent(MainMenuActivity.this, ViridianForestActivity.class);
         MainMenuActivity.this.startActivity(myIntent);
+        finish();
     }
 }
