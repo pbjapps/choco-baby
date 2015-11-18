@@ -30,7 +30,7 @@ public class Simon {
     public static String LOSE = "LOSE";
     public Context mContext;
 
-    public Simon(){
+    public Simon() {
 
     }
 
@@ -58,7 +58,7 @@ public class Simon {
         this.yellow = yellow;
     }
 
-    public void pickPokemon(int count){
+    public void pickPokemon(int count) {
         //empty stack and arraylist
         this.count = count;
         hasPickedPokemon = Boolean.FALSE;
@@ -69,7 +69,7 @@ public class Simon {
 
         //get random int between 0 to 3
         Random generator = new Random();
-        for(int i = 0; i < count; i++){
+        for (int i = 0; i < count; i++) {
             pokemonStack.push(generator.nextInt(4));
         }
 
@@ -84,14 +84,12 @@ public class Simon {
 
     }
 
-    private void handlerTest(){
-        //System.out.println(pokemonStack.toString());
-        if(isPressed){
+    private void handlerTest() {
+        if (isPressed) {
             clearSelection();
             isPressed = Boolean.FALSE;
             pokemonStack.pop();
-        }
-        else {
+        } else {
             int result = pokemonStack.peek();
             pickedPokemon.add(result);
             if (result == 0) {
@@ -107,18 +105,17 @@ public class Simon {
             } else {
                 blue.setPressed(true);
                 blue.callOnClick();
-                }
+            }
             isPressed = Boolean.TRUE;
         }
 
-        if(!pokemonStack.isEmpty()){
+        if (!pokemonStack.isEmpty()) {
             handler.postDelayed(new Runnable() {
                 public void run() {
                     handlerTest();
                 }
             }, 500);
-        }
-        else {
+        } else {
             //enable buttons
             red.setClickable(true);
             blue.setClickable(true);
@@ -130,56 +127,55 @@ public class Simon {
         }
     }
 
-    public void clearSelection(){
+    public void clearSelection() {
         red.setPressed(false);
         yellow.setPressed(false);
         green.setPressed(false);
         blue.setPressed(false);
     }
 
-    public String verifyPokemon(){
-        if(pickedPokemon.size() == this.count && hasPickedPokemon){
-            if(red.isPressed()){
+    public void updateSelection() {
+        if (pickedPokemon.size() == count && hasPickedPokemon) {
+            if (red.isPressed()) {
                 userPokemon.add(0);
                 System.out.println(userPokemon.toString());
-            }
-            else if(blue.isPressed()){
+            } else if (blue.isPressed()) {
                 userPokemon.add(3);
                 System.out.println(userPokemon.toString());
-            }
-            else if (green.isPressed()){
+            } else if (green.isPressed()) {
                 userPokemon.add(2);
                 System.out.println(userPokemon.toString());
-            }
-            else {
+            } else {
                 userPokemon.add(1);
                 System.out.println(userPokemon.toString());
             }
+        }
+    }
 
-            if(userPokemon.size() == pickedPokemon.size()){
-                if(userPokemon.equals(pickedPokemon)){
+    public String verifyPokemon() {
+        if (pickedPokemon.size() == this.count && hasPickedPokemon) {
+            if (userPokemon.size() == pickedPokemon.size()) {
+                if (userPokemon.equals(pickedPokemon)) {
                     System.out.println("CORRECT");
-                    Toast.makeText(mContext, "You WIN", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "You WIN!", Toast.LENGTH_LONG).show();
                     System.out.println("pickedPkmn" + pickedPokemon.toString() + " == userPokemon" + userPokemon.toString());
                     hasPickedPokemon = Boolean.FALSE;
                     start.setClickable(true);
                     userPokemon.clear();
-                    return(WIN);
-                }
-                else{
+                    return (WIN);
+                } else {
                     System.out.println("WRONG");
-                    Toast.makeText(mContext, "You LOSE", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "You LOSE!", Toast.LENGTH_LONG).show();
                     System.out.println("pickedPokemon " + pickedPokemon.toString() + " != userPokemon" + userPokemon.toString());
                     hasPickedPokemon = Boolean.FALSE;
                     start.setClickable(true);
                     userPokemon.clear();
-                    return(LOSE);
+                    return (LOSE);
                 }
-             }
+            }
         }
-        return("");
+        return ("");
     }
-
 
 
 }

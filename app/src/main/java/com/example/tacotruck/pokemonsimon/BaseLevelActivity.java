@@ -6,17 +6,18 @@ import android.graphics.drawable.StateListDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 
 public class BaseLevelActivity extends Activity {
@@ -37,11 +38,19 @@ public class BaseLevelActivity extends Activity {
     private ArrayList<ImageButton> buttons;
     private ArrayList<String> locations;
     levelsMap map = levelsMap.getInstance();
+    protected GridView progressView;
+    protected ProgressAdapter progressAdapter;
+    private Handler handler = new Handler();
+    private String latestResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(mapId);
+
+        progressView = (GridView) findViewById(R.id.progressView);
+        progressAdapter = new ProgressAdapter(this);
+        progressView.setAdapter(progressAdapter);
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
@@ -99,12 +108,15 @@ public class BaseLevelActivity extends Activity {
     }
 
     private void viewMainActivity() {
+        progressAdapter.updateProgress(-1);
+        progressAdapter.notifyDataSetChanged();
         Intent myIntent = new Intent(BaseLevelActivity.this, MainMenuActivity.class);
         BaseLevelActivity.this.startActivity(myIntent);
         finish();
     }
 
     private void handlePkmnClick(int pkmnSoundId) {
+        simon.updateSelection();
         MediaPlayer buttonMediaPlayer = MediaPlayer.create(BaseLevelActivity.this, pkmnSoundId);
         buttonMediaPlayer.start();
         buttonMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -113,42 +125,39 @@ public class BaseLevelActivity extends Activity {
                 mp.release();
             }
         });
-        String result = simon.verifyPokemon();
-        if (result.equals(Simon.LOSE)) {
-            level = 1;
-            viewMainActivity();
-        }
-        else if (result.equals(Simon.WIN) && level < toplevel) {
-            level++;
-            initLevel();
-        }
-        else if (result.equals(Simon.WIN)  && level >= toplevel){
-            viewMainActivity();
-            Toast.makeText(this.getApplicationContext(), "You beat all 8 gym leaders! Now onto the Elite 4...",Toast.LENGTH_SHORT).show();
-        }
+        progressAdapter.updateProgress(simon.userPokemon.size());
+        progressAdapter.notifyDataSetChanged();
+        latestResult = simon.verifyPokemon();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                handleResult();
+            }
+        }, 500);
     }
 
-    private void createStateListDrawable(Integer clickedDrawable, Integer defaultDrawable, ImageButton b){
+    private void createStateListDrawable(Integer clickedDrawable, Integer defaultDrawable, ImageButton b) {
         StateListDrawable states = new StateListDrawable();
         states.addState(new int[]{android.R.attr.state_pressed},
                 getResources().getDrawable(clickedDrawable));
         states.addState(new int[]{android.R.attr.state_focused},
                 getResources().getDrawable(clickedDrawable));
-        states.addState(new int[] {android.R.attr.state_selected},
+        states.addState(new int[]{android.R.attr.state_selected},
                 getResources().getDrawable(clickedDrawable));
-        states.addState(new int[] { },
+        states.addState(new int[]{},
                 getResources().getDrawable(defaultDrawable));
 
         b.setImageDrawable(states);
     }
 
-    private void initLevel(){
+    private void initLevel() {
         pkmnCount = level + 2;
+        latestResult = "";
+        progressAdapter.updateProgress(-1);
+        progressAdapter.notifyDataSetChanged();
 
-        location.setText(locations.get(level-1));
+        location.setText(locations.get(level - 1));
 
-        //for(Integer pkmnIds : map.getPokemon(level)){
-        for(int i = 0; i < map.getPokemon(level).size(); i++){
+        for (int i = 0; i < map.getPokemon(level).size(); i++) {
             createStateListDrawable(map.getPokemon(level).get(i), map.getBackground(level).get(0), buttons.get(i));
         }
 
@@ -179,5 +188,18 @@ public class BaseLevelActivity extends Activity {
                 handlePkmnClick(map.getSound(level).get(3));
             }
         });
+    }
+
+    private void handleResult() {
+        if (latestResult.equals(Simon.LOSE)) {
+            level = 1;
+            viewMainActivity();
+        } else if (latestResult.equals(Simon.WIN) && level < toplevel) {
+            level++;
+            initLevel();
+        } else if (latestResult.equals(Simon.WIN) && level >= toplevel) {
+            viewMainActivity();
+            Toast.makeText(this.getApplicationContext(), "You beat all 8 gym leaders! Now onto the Elite 4...", Toast.LENGTH_SHORT).show();
+        }
     }
 }

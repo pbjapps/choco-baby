@@ -41,7 +41,7 @@
         android:id="@+id/textView"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:textSize="40dp"
+        android:textSize="40sp"
         android:textColor="#FFF" />
 
     <ImageView
@@ -49,7 +49,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/imageView6"
         android:src="@mipmap/pokeball"
+        android:layout_above="@+id/button"
         android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp" />
+        android:layout_alignEnd="@+id/textView"
+        android:layout_alignStart="@+id/textView" />
 </RelativeLayout>
